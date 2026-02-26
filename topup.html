@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Topup Hub | MasbroXIwan</title>
+  <meta name="description" content="Pembelian topup/gift/pin (manual payment) dengan pilihan QR ShopeePay, MAE dan TNG.">
+  <meta name="theme-color" content="#0b1224" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b1224;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.04);
+      --border:rgba(255,255,255,.12);
+      --muted:rgba(255,255,255,.68);
+      --blue:#2563eb;
+      --green:#34d399;
+      --danger:#fb7185;
+      --amber:#fbbf24;
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      color:#fff;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(950px 520px at 12% 12%, rgba(147,51,234,.22), transparent 62%),
+        radial-gradient(950px 520px at 88% 90%, rgba(37,99,235,.26), transparent 62%),
+        radial-gradient(780px 460px at 62% 20%, rgba(52,211,153,.10), transparent 60%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1120px;margin:0 auto;padding:26px 16px 56px}
+    .topbar{
+      display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+      margin-bottom:12px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:46px;height:46px;border-radius:15px;background:var(--blue);
+      display:grid;place-items:center;box-shadow:0 0 24px rgba(37,99,235,.40);
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:1000;letter-spacing:.08em;
+    }
+    h1{
+      margin:0;
+      font-family:Sora,Inter,sans-serif;
+      font-size:1.35rem;
+      letter-spacing:-.02em;
+    }
+    .sub{color:rgba(255,255,255,.62);font-size:.88rem;margin-top:4px;line-height:1.35}
+    .pillrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.11);
+      color:rgba(255,255,255,.82);
+      font-weight:900;font-size:.72rem;letter-spacing:.12em;
+      user-select:none;
+    }
+    .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+    .back{
+      color:rgba(255,255,255,.82);
+      text-decoration:none;
+      font-weight:900;
+      letter-spacing:.10em;
+      font-size:.72rem;
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+    }
+    .back:hover{background:rgba(59,130,246,.16);border-color:transparent}
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+      margin:12px 0 14px;
+    }
+    @media (max-width: 980px){ .hero{grid-template-columns:1fr} }
+
+    .heroCard{
+      background:linear-gradient(135deg, rgba(37,99,235,.20), rgba(147,51,234,.16));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position:relative;
+      overflow:hidden;
+    }
+    .heroCard::after{
+      content:"";
+      position:absolute;inset:-40px;
+      background: radial-gradient(260px 260px at 20% 25%, rgba(96,165,250,.18), transparent 55%),
+                  radial-gradient(260px 260px at 80% 70%, rgba(52,211,153,.12), transparent 55%);
+      pointer-events:none;
+    }
+    .heroInner{position:relative}
+    .terminal{
+      background:rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      padding:12px 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color:rgba(255,255,255,.80);
+      font-size:.82rem;
+      line-height:1.55;
+    }
+    .terminal b{color:#fff}
+    .terminal .green{color:#bbf7d0}
+    .terminal .amber{color:#fde68a}
+
+    .heroTitle{margin:14px 0 0;font-family:Sora;font-size:1.45rem;letter-spacing:-.02em}
+    .heroText{margin:10px 0 0;color:rgba(255,255,255,.78);line-height:1.6}
+
+    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{
+      border:none;cursor:pointer;border-radius:16px;
+      padding:12px 14px;
+      font-weight:1000;letter-spacing:.10em;font-size:.72rem;
+      display:inline-flex;align-items:center;gap:8px;
+      color:#fff;
+      user-select:none;
+    }
+    .btnPrimary{background:var(--blue)}
+    .btnGhost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+    .btnDanger{background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.40);color:#fecdd3}
+    .btn:active{transform:translateY(1px)}
+
+    .card{
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .products{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:12px;
+      margin-top:12px;
+    }
+    @media (max-width: 980px){ .products{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width: 560px){ .products{grid-template-columns:1fr} }
+
+    .prod{
+      background:rgba(255,255,255,.035);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:20px;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      position:relative;
+      overflow:hidden;
+      min-height:160px;
+    }
+    .prod:hover{border-color:rgba(255,255,255,.16);transform:translateY(-1px)}
+    .badge{
+      position:absolute;top:12px;right:12px;
+      font-size:.66rem;font-weight:1000;letter-spacing:.12em;
+      padding:7px 10px;border-radius:999px;
+      background:rgba(52,211,153,.14);
+      border:1px solid rgba(52,211,153,.35);
+      color:#bbf7d0;
+    }
+    .badge.amber{background:rgba(251,191,36,.14);border-color:rgba(251,191,36,.35);color:#fde68a}
+    .prod h3{margin:0;font-family:Sora;font-size:1.02rem}
+    .prod p{margin:0;color:rgba(255,255,255,.60);font-size:.86rem;line-height:1.45}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto}
+    .price{font-family:Sora;font-weight:1000;font-size:1.05rem;color:#e2e8f0}
+    .mini{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:14px;
+      padding:10px 12px;
+      cursor:pointer;
+      color:#fff;font-weight:1000;font-size:.70rem;letter-spacing:.12em;
+      display:inline-flex;align-items:center;gap:8px;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .mini:hover{background:rgba(59,130,246,.16);border-color:transparent}
+    .mini:active{transform:translateY(1px)}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:16px;
+      margin-top:14px;
+    }
+    @media (max-width: 920px){ .grid{grid-template-columns:1fr} }
+
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+    .tab{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.85);
+      padding:10px 12px;border-radius:999px;cursor:pointer;
+      font-weight:1000;font-size:.72rem;letter-spacing:.12em;
+      display:inline-flex;align-items:center;gap:8px;
+      user-select:none;
+    }
+    .tab.active{background:var(--blue);border-color:transparent;color:#fff}
+
+    .form{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:6px;
+    }
+    @media (max-width:720px){ .form{grid-template-columns:1fr} }
+    .field{display:flex;flex-direction:column;gap:6px}
+    .label{
+      color:rgba(255,255,255,.65);
+      font-weight:1000;font-size:.70rem;letter-spacing:.14em;
+    }
+    input, select, textarea{
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:12px 12px;
+      color:#fff;
+      outline:none;
+      font-size:.95rem;
+    }
+    input:focus, select:focus, textarea:focus{border-color:rgba(96,165,250,.7)}
+    textarea{min-height:88px;resize:vertical}
+    .full{grid-column:1 / -1}
+    .hint{
+      margin-top:10px;
+      color:rgba(255,255,255,.55);
+      font-size:.78rem;
+      line-height:1.55;
+    }
+
+    .sideTitle{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .sideTitle h3{margin:0;font-family:Sora;font-size:1.05rem}
+    .tag2{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:rgba(255,255,255,.80);
+      font-weight:1000;font-size:.70rem;letter-spacing:.12em;
+    }
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+    .summary{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+    .sumRow{display:flex;justify-content:space-between;gap:12px;color:rgba(255,255,255,.82);font-size:.92rem}
+    .sumRow b{color:#fff}
+    .paybtn{width:100%;justify-content:center;padding:14px 14px;border-radius:18px;font-size:.78rem}
+    .tiny{font-size:.74rem;color:rgba(255,255,255,.55);line-height:1.55}
+
+    .paySwitch{
+      display:flex;gap:10px;flex-wrap:wrap;margin-top:10px
+    }
+    .payOpt{
+      flex:1;
+      min-width:140px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.86);
+      padding:10px 12px;border-radius:999px;cursor:pointer;
+      font-weight:1000;font-size:.72rem;letter-spacing:.12em;
+      user-select:none;
+      text-align:center;
+    }
+    .payOpt.active{background:rgba(37,99,235,.28);border-color:rgba(37,99,235,.55);color:#fff}
+    .qrBox{
+      margin-top:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.16);
+      border-radius:16px;
+      overflow:hidden;
+    }
+    .qrBox img{width:100%;display:block}
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.14);
+      padding:10px 12px;
+      border-radius:14px;
+      color:#fff;
+      font-weight:900;
+      font-size:.82rem;
+      display:none;
+      z-index:10000;
+      backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">🧾</div>
+        <div>
+          <h1>Topup & Gift Hub</h1>
+          <div class="sub">Checkout manual (real) — pilih QR, bayar, lepas tu WhatsApp bukti. Auto kira service fee ✅</div>
+        </div>
+      </div>
+
+      <div class="pillrow">
+        <div class="pill"><span class="dot"></span> SYSTEM: ONLINE</div>
+        <div class="pill">PAY: QR MANUAL</div>
+        <a class="back" href="./">⬅ BACK</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="heroCard">
+        <div class="heroInner">
+          <div class="terminal">
+            <div>MODE: <b class="green">REAL FLOW (MANUAL VERIFY)</b></div>
+            <div>PAYMENT: <b class="amber">QR (ShopeePay / MAE / TNG)</b> → then WhatsApp proof</div>
+          </div>
+
+          <h2 class="heroTitle">Topup macam website betul — tapi senang urus</h2>
+          <p class="heroText">
+            Customer pilih produk + amount → pilih QR payment → bayar → tekan <b>PAY NOW (WHATSAPP)</b>.
+            Invoice siap termasuk <b>kaedah payment</b> yang dipilih. Kau cuma verify bukti & proses.
+          </p>
+
+          <div class="ctaRow">
+            <button class="btn btnPrimary" id="btnQuickSelect">PILIH PACK (FAST)</button>
+            <button class="btn btnGhost" id="btnCopyOrder">COPY INVOICE</button>
+            <button class="btn btnDanger" id="btnClear">CLEAR</button>
+          </div>
+
+          <div class="hint">
+            Nota: Ini sesuai untuk start bisnes tanpa backend. Bila dah steady, kita boleh upgrade auto-verify (gateway).
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sideTitle">
+          <h3>Packs Popular</h3>
+          <span class="tag2">PICK</span>
+        </div>
+        <div class="products" id="productGrid"></div>
+        <div class="tiny" style="margin-top:10px">
+          Packs ini boleh ubah ikut harga sebenar kau.
+        </div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Left: Form -->
+      <div class="card">
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-mode="gift">🎁 GIFT CARD</button>
+          <button class="tab" data-mode="prepaid">📱 PREPAID</button>
+          <button class="tab" data-mode="pin">🔑 TOPUP PIN</button>
+        </div>
+
+        <div class="form">
+          <div class="field">
+            <div class="label">PRODUK</div>
+            <select id="product">
+              <option value="gift">Gift Card</option>
+              <option value="prepaid">Topup Prepaid</option>
+              <option value="pin">Topup PIN / Voucher</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="label">AMOUNT</div>
+            <select id="amount">
+              <option value="10">RM10</option>
+              <option value="20">RM20</option>
+              <option value="30">RM30</option>
+              <option value="50">RM50</option>
+              <option value="100">RM100</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="label">TELCO / PLATFORM</div>
+            <select id="carrier">
+              <option value="U Mobile">U Mobile</option>
+              <option value="Digi">Digi</option>
+              <option value="Celcom">Celcom</option>
+              <option value="Maxis">Maxis</option>
+              <option value="Tune Talk">Tune Talk</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <div class="label">NO. TELEFON / ID (WAJIB)</div>
+            <input id="target" placeholder="Contoh: 01XXXXXXXX / Player ID" />
+          </div>
+
+          <div class="field full" id="giftFields">
+            <div class="label">NAMA PENERIMA (GIFT)</div>
+            <input id="recipient" placeholder="Contoh: Amir / Kakak / Customer" />
+          </div>
+
+          <div class="field full" id="pinFields" style="display:none">
+            <div class="label">PIN TYPE</div>
+            <select id="pinType">
+              <option value="Standard PIN">Standard PIN</option>
+              <option value="E-PIN">E-PIN (Digital)</option>
+              <option value="Voucher">Voucher Code</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <div class="label">CATATAN / NOTE</div>
+            <textarea id="note" placeholder="Contoh: urgent, lepas bayar terus proses."></textarea>
+          </div>
+        </div>
+
+        <div class="hint">
+          🔒 Jangan minta OTP/password customer. Minta info minimum + bukti transaksi.
+        </div>
+      </div>
+
+      <!-- Right: Payment + Summary -->
+      <div class="card">
+        <div class="sideTitle">
+          <h3>Payment (Pilih 1)</h3>
+          <span class="tag2" id="payLabel">ShopeePay</span>
+        </div>
+
+        <div class="paySwitch">
+          <button class="payOpt active" id="opt-shopee" type="button" onclick="setPay('shopee')">SHOPEEPAY</button>
+          <button class="payOpt" id="opt-mae" type="button" onclick="setPay('mae')">MAE</button>
+          <button class="payOpt" id="opt-tng" type="button" onclick="setPay('tng')">TNG</button>
+        </div>
+
+        <div class="qrBox">
+          <img id="payQR" src="./ShopeePay_QR.png" alt="QR Payment">
+        </div>
+
+        <div class="hint" id="payNote">
+          Scan QR ikut pilihan, buat bayaran, kemudian tekan <b>PAY NOW (WHATSAPP)</b> untuk hantar invoice + bukti transaksi.
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="sideTitle">
+          <h3>Ringkasan Order</h3>
+          <span class="tag2" id="statusTag">DRAFT</span>
+        </div>
+
+        <div class="summary" id="summaryBox">
+          <div class="sumRow"><span>Produk</span><b id="sProduct">-</b></div>
+          <div class="sumRow"><span>Amount</span><b id="sAmount">-</b></div>
+          <div class="sumRow"><span>Carrier</span><b id="sCarrier">-</b></div>
+          <div class="sumRow"><span>Target</span><b id="sTarget">-</b></div>
+          <div class="sumRow" id="sRecipientRow"><span>Penerima</span><b id="sRecipient">-</b></div>
+          <div class="sumRow" id="sPinRow" style="display:none"><span>PIN Type</span><b id="sPinType">-</b></div>
+          <div class="sumRow"><span>Payment</span><b id="sPay">-</b></div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="summary">
+          <div class="sumRow"><span>Sub-total</span><b id="subTotal">RM0</b></div>
+          <div class="sumRow"><span>Service fee</span><b id="serviceFee">RM0.00</b></div>
+          <div class="sumRow"><span>Total</span><b id="grandTotal">RM0.00</b></div>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+          <button class="btn btnPrimary paybtn" id="btnPayNow">PAY NOW (WHATSAPP)</button>
+          <button class="btn btnGhost paybtn" id="btnCopyInvoice">COPY INVOICE</button>
+        </div>
+
+        <div class="tiny" style="margin-top:10px">
+          Formula fee (boleh ubah): <b>1.5% + RM0.40</b> (cap RM2.00).  
+          Bila dah besar nanti, kita upgrade auto-verify.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied ✅</div>
+
+<script>
+  // =========================
+  // 1) WA NUMBER (TUKAR INI)
+  // =========================
+  // Format: 60xxxxxxxxx (tanpa +)
+  const WA_NUMBER = "601115360207"; // contoh: 6011xxxxxxx
+
+  // =========================
+  // 2) Payment QR files (kau punya)
+  // =========================
+  let PAY_METHOD = "shopee";
+  const payConfig = {
+    shopee: { label: "ShopeePay", img: "./ShopeePay_QR.png" },
+    mae:    { label: "MAE",      img: "./MAE_QR.png" },
+    tng:    { label: "TNG eWallet", img: "./TNG_QR.png" }
+  };
+
+  function setPay(key){
+    PAY_METHOD = key;
+    const cfg = payConfig[key] || payConfig.shopee;
+
+    const img = document.getElementById("payQR");
+    const label = document.getElementById("payLabel");
+    const note = document.getElementById("payNote");
+
+    if (img) img.src = cfg.img;
+    if (label) label.textContent = cfg.label;
+    if (note) note.innerHTML = `Scan QR <b>${cfg.label}</b>, buat bayaran, kemudian tekan <b>PAY NOW (WHATSAPP)</b> untuk hantar invoice + bukti transaksi.`;
+
+    // toggle button active UI
+    ["shopee","mae","tng"].forEach(k=>{
+      const btn = document.getElementById("opt-" + k);
+      if (btn) btn.classList.toggle("active", k === key);
+    });
+
+    updateSummary();
+    toast("Payment: " + cfg.label);
+  }
+
+  // =========================
+  // Packs (template)
+  // =========================
+  const packs = [
+    { mode:"gift", title:"Gift Card RM20", desc:"Hadiah digital.", amount:20, badge:"POPULAR" },
+    { mode:"prepaid", title:"Prepaid RM30", desc:"Topup telco cepat.", amount:30, badge:"FAST" },
+    { mode:"pin", title:"PIN RM50", desc:"Kod / voucher digital.", amount:50, badge:"HOT" },
+    { mode:"gift", title:"Gift Card RM50", desc:"Nilai besar.", amount:50, badge:"BEST" },
+    { mode:"prepaid", title:"Prepaid RM10", desc:"Emergency settle.", amount:10, badge:"QUICK" },
+    { mode:"pin", title:"PIN RM100", desc:"Heavy user.", amount:100, badge:"PREMIUM" },
+  ];
+
+  const modeLabels = {
+    gift: "Gift Card",
+    prepaid: "Topup Prepaid",
+    pin: "Topup PIN / Voucher"
+  };
+
+  // ===== Helpers
+  const $ = (q)=>document.querySelector(q);
+  const $$ = (q)=>Array.from(document.querySelectorAll(q));
+  const toast = (msg)=>{
+    const t = $("#toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    clearTimeout(window.__t);
+    window.__t = setTimeout(()=> t.style.display="none", 1400);
+  };
+
+  function renderPacks(){
+    const grid = $("#productGrid");
+    grid.innerHTML = packs.map((p, idx) => {
+      const amber = (p.badge === "PREMIUM" || p.badge==="BEST") ? " amber" : "";
+      return `
+        <div class="prod">
+          <div class="badge${amber}">${p.badge}</div>
+          <h3>${p.title}</h3>
+          <p>${p.desc}</p>
+          <div class="row">
+            <div class="price">RM${p.amount}</div>
+            <button class="mini" data-pick="${idx}" type="button">PICK</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    $$(".mini[data-pick]").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const p = packs[Number(btn.dataset.pick)];
+        applyMode(p.mode);
+        $("#amount").value = String(p.amount);
+        $("#product").value = p.mode;
+        updateSummary();
+        toast("Pack dipilih ✅");
+      });
+    });
+  }
+
+  // ===== Fee settings (auto fee)
+  function calcServiceFee(amount){
+    const a = Number(amount) || 0;
+    if (a <= 0) return 0;
+    let fee = a * 0.015 + 0.40; // 1.5% + 0.40
+    fee = Math.min(2.00, fee); // cap
+    return Math.round(fee * 100) / 100;
+  }
+
+  // ===== Mode switching
+  function applyMode(mode){
+    $$("#tabs .tab").forEach(t=>{
+      t.classList.toggle("active", t.dataset.mode === mode);
+    });
+
+    $("#product").value = mode;
+    $("#giftFields").style.display = (mode === "gift") ? "block" : "none";
+    $("#pinFields").style.display = (mode === "pin") ? "block" : "none";
+
+    $("#sRecipientRow").style.display = (mode === "gift") ? "flex" : "none";
+    $("#sPinRow").style.display = (mode === "pin") ? "flex" : "none";
+
+    updateSummary();
+  }
+
+  // ===== Invoice
+  function buildInvoiceText(){
+    const mode = $("#product").value;
+    const amount = Number($("#amount").value || 0);
+    const carrier = $("#carrier").value;
+    const target = $("#target").value.trim();
+    const recipient = $("#recipient").value.trim();
+    const pinType = $("#pinType").value;
+    const note = $("#note").value.trim();
+
+    const fee = calcServiceFee(amount);
+    const total = (amount + fee).toFixed(2);
+
+    const missing = [];
+    if (!amount) missing.push("amount");
+    if (!target || target.length < 6) missing.push("no/ID target");
+    if (mode === "gift" && !recipient) missing.push("nama penerima (gift)");
+
+    if (missing.length){
+      return { ok:false, text:`❌ Lengkapkan dulu: ${missing.join(", ")}.` };
+    }
+
+    const payLabel = (payConfig[PAY_METHOD]?.label || "Manual");
+    const lines = [];
+    lines.push("🧾 *INVOICE TOPUP HUB*");
+    lines.push(`Produk: *${modeLabels[mode] || mode}*`);
+    lines.push(`Amount: *RM${amount}*`);
+    lines.push(`Carrier/Platform: *${carrier}*`);
+    lines.push(`Target: *${target}*`);
+    if (mode === "gift") lines.push(`Penerima: *${recipient}*`);
+    if (mode === "pin") lines.push(`PIN Type: *${pinType}*`);
+    lines.push(`Payment: *${payLabel}*`);
+    lines.push(`Service fee: *RM${fee.toFixed(2)}*`);
+    lines.push(`TOTAL: *RM${total}*`);
+    if (note) {
+      lines.push("");
+      lines.push("Catatan:");
+      lines.push(note);
+    }
+    lines.push("");
+    lines.push("✅ Lepas bayar, hantar *bukti transaksi* untuk proses.");
+    lines.push("🔒 Nota: Jangan kongsi OTP/password.");
+    return { ok:true, text: lines.join("\\n") };
+  }
+
+  async function copyText(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      toast("Copied ✅");
+      return true;
+    }catch(e){
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      ta.remove();
+      toast("Copied ✅");
+      return true;
+    }
+  }
+
+  function openWhatsApp(text){
+    const msg = encodeURIComponent(text);
+    const url = (WA_NUMBER && WA_NUMBER.includes("X"))
+      ? ("https://wa.me/?text=" + msg)
+      : ("https://wa.me/" + WA_NUMBER + "?text=" + msg);
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  // ===== Summary
+  function updateSummary(){
+    const mode = $("#product").value;
+    const amount = Number($("#amount").value || 0);
+    const carrier = $("#carrier").value;
+    const target = $("#target").value.trim();
+    const recipient = $("#recipient").value.trim();
+    const pinType = $("#pinType").value;
+
+    $("#sProduct").textContent = modeLabels[mode] || "-";
+    $("#sAmount").textContent = amount ? `RM${amount}` : "-";
+    $("#sCarrier").textContent = carrier || "-";
+    $("#sTarget").textContent = target || "-";
+    $("#sRecipient").textContent = recipient || "-";
+    $("#sPinType").textContent = pinType || "-";
+
+    const payLabel = (payConfig[PAY_METHOD]?.label || "Manual");
+    $("#sPay").textContent = payLabel;
+
+    const fee = calcServiceFee(amount);
+    $("#subTotal").textContent = `RM${amount || 0}`;
+    $("#serviceFee").textContent = `RM${fee.toFixed(2)}`;
+    $("#grandTotal").textContent = `RM${(amount + fee).toFixed(2)}`;
+
+    const inv = buildInvoiceText();
+    const ok = inv.ok;
+
+    $("#statusTag").textContent = ok ? "READY" : "DRAFT";
+    $("#statusTag").style.borderColor = ok ? "rgba(52,211,153,.45)" : "rgba(255,255,255,.12)";
+    $("#statusTag").style.background = ok ? "rgba(52,211,153,.12)" : "rgba(255,255,255,.04)";
+    $("#statusTag").style.color = ok ? "#bbf7d0" : "rgba(255,255,255,.80)";
+  }
+
+  function clearForm(){
+    $("#product").value = "gift";
+    $("#amount").value = "10";
+    $("#carrier").value = "U Mobile";
+    $("#target").value = "";
+    $("#recipient").value = "";
+    $("#pinType").value = "Standard PIN";
+    $("#note").value = "";
+    applyMode("gift");
+    updateSummary();
+    toast("Cleared ✅");
+  }
+
+  // ===== Wire up
+  window.addEventListener("load", ()=>{
+    renderPacks();
+    // default pay
+    setPay("shopee");
+
+    // tabs
+    $$("#tabs .tab").forEach(t=>{
+      t.addEventListener("click", ()=> applyMode(t.dataset.mode));
+    });
+
+    // form events
+    ["product","amount","carrier","target","recipient","pinType","note"].forEach(id=>{
+      const el = document.getElementById(id);
+      el.addEventListener("input", updateSummary);
+      el.addEventListener("change", updateSummary);
+    });
+
+    $("#product").addEventListener("change", ()=> applyMode($("#product").value));
+
+    // buttons
+    $("#btnQuickSelect").addEventListener("click", ()=> {
+      const mode = $("#product").value;
+      const pick = packs.find(p=>p.mode===mode) || packs[0];
+      applyMode(pick.mode);
+      $("#amount").value = String(pick.amount);
+      $("#product").value = pick.mode;
+      updateSummary();
+      toast("Auto pack ✅");
+    });
+
+    $("#btnCopyOrder").addEventListener("click", async ()=>{
+      const inv = buildInvoiceText();
+      await copyText(inv.text);
+    });
+
+    $("#btnCopyInvoice").addEventListener("click", async ()=>{
+      const inv = buildInvoiceText();
+      await copyText(inv.text);
+    });
+
+    $("#btnPayNow").addEventListener("click", ()=>{
+      const inv = buildInvoiceText();
+      if (!inv.ok){ toast("Lengkapkan form dulu"); return; }
+      openWhatsApp(inv.text);
+    });
+
+    $("#btnClear").addEventListener("click", clearForm);
+
+    updateSummary();
+  });
+</script>
+</body>
+</html>
