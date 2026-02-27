@@ -588,7 +588,7 @@
   }
 
   // ===== Invoice =====
-  function buildInvoice(extraLine=""){
+  function buildInvoice(extraLine=""){ 
     const mode=$("#product").value;
     const carrier=$("#carrier").value;
     const target=$("#target").value.trim();
@@ -658,7 +658,7 @@
     lines.push("✅ Lepas bayar, hantar *bukti transaksi (screenshot)* untuk proses.");
     lines.push("🔒 Nota: Jangan kongsi OTP/password.");
 
-    return {ok:true, text:lines.join("\\n"), total};
+    return {ok:true, text:lines.join("\n"), total};
   }
 
   async function copyText(text){
@@ -758,7 +758,8 @@
       return matchQ && matchF;
     });
 
-    $("#logCount").textContent = `${filtered.length} ORDERS`;
+    $("#logCount").textContent = \
+      `${filtered.length} ORDERS`;
 
     if (!filtered.length){
       tbody.innerHTML = `<tr><td colspan="6" style="color:rgba(255,255,255,.65)">Tiada order.</td></tr>`;
