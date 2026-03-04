@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Topup Hub PRO++ | MasbroXIwan</title>
+  <meta name="description" content="Topup/Gift/PIN/MLBB (manual pay) — 3 QR + WhatsApp + Order ID + fee/margin + Order Log admin (local).">
+  <meta name="theme-color" content="#0b1224" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Sora:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b1224;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.04);
+      --border:rgba(255,255,255,.12);
+      --muted:rgba(255,255,255,.68);
+      --blue:#2563eb;
+      --green:#34d399;
+      --danger:#fb7185;
+      --amber:#fbbf24;
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;color:#fff;
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(950px 520px at 12% 12%, rgba(147,51,234,.22), transparent 62%),
+        radial-gradient(950px 520px at 88% 90%, rgba(37,99,235,.26), transparent 62%),
+        radial-gradient(780px 460px at 62% 20%, rgba(52,211,153,.10), transparent 60%),
+        var(--bg);
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1180px;margin:0 auto;padding:26px 16px 60px}
+    .topbar{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+    .brand{display:flex;gap:12px;align-items:center}
+    .logo{
+      width:46px;height:46px;border-radius:15px;background:var(--blue);
+      display:grid;place-items:center;box-shadow:0 0 24px rgba(37,99,235,.40);
+      border:1px solid rgba(255,255,255,.10);
+      font-weight:1000;letter-spacing:.08em;
+    }
+    h1{margin:0;font-family:Sora,Inter,sans-serif;font-size:1.35rem;letter-spacing:-.02em}
+    .sub{color:rgba(255,255,255,.62);font-size:.88rem;margin-top:4px;line-height:1.35}
+    .pillrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:10px 12px;border-radius:999px;
+      background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.11);
+      color:rgba(255,255,255,.82);
+      font-weight:900;font-size:.72rem;letter-spacing:.12em;user-select:none;
+    }
+    .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+    .back{
+      color:rgba(255,255,255,.82);text-decoration:none;font-weight:900;letter-spacing:.10em;font-size:.72rem;
+      display:inline-flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
+    }
+    .back:hover{background:rgba(59,130,246,.16);border-color:transparent}
+
+    .hero{
+      display:grid;grid-template-columns:1.1fr .9fr;gap:14px;margin:12px 0 14px;
+    }
+    @media (max-width:980px){.hero{grid-template-columns:1fr}}
+    .heroCard{
+      background:linear-gradient(135deg, rgba(37,99,235,.20), rgba(147,51,234,.16));
+      border:1px solid rgba(255,255,255,.10);border-radius:var(--radius);padding:18px;
+      backdrop-filter: blur(16px);-webkit-backdrop-filter: blur(16px);
+      position:relative;overflow:hidden;
+    }
+    .heroCard::after{
+      content:"";position:absolute;inset:-40px;
+      background: radial-gradient(260px 260px at 20% 25%, rgba(96,165,250,.18), transparent 55%),
+                  radial-gradient(260px 260px at 80% 70%, rgba(52,211,153,.12), transparent 55%);
+      pointer-events:none;
+    }
+    .heroInner{position:relative}
+    .terminal{
+      background:rgba(0,0,0,.20);border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;padding:12px 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color:rgba(255,255,255,.80);font-size:.82rem;line-height:1.55;
+    }
+    .terminal b{color:#fff}
+    .terminal .green{color:#bbf7d0}
+    .terminal .amber{color:#fde68a}
+    .heroTitle{margin:14px 0 0;font-family:Sora;font-size:1.45rem;letter-spacing:-.02em}
+    .heroText{margin:10px 0 0;color:rgba(255,255,255,.78);line-height:1.6}
+
+    .ctaRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .btn{
+      border:none;cursor:pointer;border-radius:16px;padding:12px 14px;
+      font-weight:1000;letter-spacing:.10em;font-size:.72rem;
+      display:inline-flex;align-items:center;gap:8px;color:#fff;user-select:none;
+    }
+    .btnPrimary{background:var(--blue)}
+    .btnGhost{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+    .btnDanger{background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.40);color:#fecdd3}
+    .btn:active{transform:translateY(1px)}
+
+    .card{
+      background:rgba(255,255,255,.055);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius);
+      padding:18px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px;margin-top:14px}
+    @media (max-width:920px){.grid{grid-template-columns:1fr}}
+
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 12px}
+    .tab{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.85);
+      padding:10px 12px;border-radius:999px;cursor:pointer;
+      font-weight:1000;font-size:.72rem;letter-spacing:.12em;user-select:none;
+    }
+    .tab.active{background:var(--blue);border-color:transparent;color:#fff}
+
+    .form{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px}
+    @media (max-width:720px){.form{grid-template-columns:1fr}}
+    .field{display:flex;flex-direction:column;gap:6px}
+    .label{color:rgba(255,255,255,.65);font-weight:1000;font-size:.70rem;letter-spacing:.14em}
+    input,select,textarea{
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:12px 12px;
+      color:#fff;
+      outline:none;
+      font-size:.95rem;
+    }
+    input:focus,select:focus,textarea:focus{border-color:rgba(96,165,250,.7)}
+    textarea{min-height:88px;resize:vertical}
+    .full{grid-column:1 / -1}
+    .hint{margin-top:10px;color:rgba(255,255,255,.55);font-size:.78rem;line-height:1.55}
+
+    .sideTitle{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .sideTitle h3{margin:0;font-family:Sora;font-size:1.05rem}
+    .tag2{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      color:rgba(255,255,255,.80);
+      font-weight:1000;font-size:.70rem;letter-spacing:.12em;
+    }
+    .hr{height:1px;background:rgba(255,255,255,.10);margin:14px 0}
+    .summary{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+    .sumRow{display:flex;justify-content:space-between;gap:12px;color:rgba(255,255,255,.82);font-size:.92rem}
+    .sumRow b{color:#fff}
+    .paybtn{width:100%;justify-content:center;padding:14px 14px;border-radius:18px;font-size:.78rem}
+
+    .paySwitch{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .payOpt{
+      flex:1;min-width:140px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.86);
+      padding:10px 12px;border-radius:999px;cursor:pointer;
+      font-weight:1000;font-size:.72rem;letter-spacing:.12em;user-select:none;text-align:center;
+    }
+    .payOpt.active{background:rgba(37,99,235,.28);border-color:rgba(37,99,235,.55);color:#fff}
+    .qrBox{
+      margin-top:12px;border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.16);border-radius:16px;overflow:hidden;
+    }
+    .qrBox img{width:100%;display:block}
+
+    .toggleRow{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .toggle{
+      flex:1;min-width:160px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      padding:10px 12px;
+      display:flex;justify-content:space-between;align-items:center;gap:10px;
+      color:rgba(255,255,255,.85);
+      font-weight:900;font-size:.78rem;letter-spacing:.10em;
+    }
+    .switch{
+      width:46px;height:26px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(0,0,0,.18);
+      position:relative;cursor:pointer;flex:0 0 auto;
+    }
+    .knob{
+      width:22px;height:22px;border-radius:50%;
+      background:#fff;position:absolute;top:1px;left:1px;transition:.18s;
+    }
+    .switch.on{background:rgba(37,99,235,.35);border-color:rgba(37,99,235,.55)}
+    .switch.on .knob{left:21px}
+
+    /* Admin log table */
+    .logTop{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .chip{
+      padding:10px 12px;border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.85);
+      font-weight:1000;font-size:.72rem;letter-spacing:.12em;
+      cursor:pointer;user-select:none;
+    }
+    .chip.active{background:rgba(37,99,235,.28);border-color:rgba(37,99,235,.55);color:#fff}
+    .tableWrap{margin-top:12px;overflow:auto;border-radius:16px;border:1px solid rgba(255,255,255,.10)}
+    table{width:100%;border-collapse:collapse;min-width:760px;background:rgba(0,0,0,.14)}
+    th,td{padding:10px 10px;border-bottom:1px solid rgba(255,255,255,.08);font-size:.86rem;vertical-align:top}
+    th{color:rgba(255,255,255,.70);font-weight:1000;letter-spacing:.12em;font-size:.70rem;text-align:left;background:rgba(255,255,255,.04)}
+    td .small{color:rgba(255,255,255,.58);font-size:.78rem;line-height:1.35}
+    .status{
+      display:inline-flex;gap:8px;align-items:center;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+      font-weight:1000;font-size:.72rem;letter-spacing:.10em;
+    }
+    .st-new{border-color:rgba(251,191,36,.35);background:rgba(251,191,36,.10);color:#fde68a}
+    .st-paid{border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.10);color:#bbf7d0}
+    .st-done{border-color:rgba(96,165,250,.45);background:rgba(37,99,235,.14);color:#dbeafe}
+    .actions{display:flex;gap:8px;flex-wrap:wrap}
+    .act{
+      padding:8px 10px;border-radius:12px;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.12);
+      color:#fff;font-weight:1000;font-size:.70rem;letter-spacing:.10em;
+      cursor:pointer;
+    }
+    .act:hover{background:rgba(59,130,246,.16);border-color:transparent}
+    .act.danger{background:rgba(251,113,133,.12);border-color:rgba(251,113,133,.40);color:#fecdd3}
+    .mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;}
+    .toast{
+      position:fixed;left:50%;bottom:18px;transform:translateX(-50%);
+      background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.14);
+      padding:10px 12px;border-radius:14px;color:#fff;
+      font-weight:900;font-size:.82rem;display:none;z-index:9999;backdrop-filter: blur(10px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo">++</div>
+        <div>
+          <h1>Topup Hub (PRO++)</h1>
+          <div class="sub">Order ID + MLBB + 3 QR + WhatsApp + fee/margin + Admin Order Log (local).</div>
+        </div>
+      </div>
+      <div class="pillrow">
+        <div class="pill"><span class="dot"></span> SYSTEM: ONLINE</div>
+        <div class="pill">ADMIN LOG: LOCAL</div>
+        <a class="back" href="./">⬅ BACK</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <div class="heroCard">
+        <div class="heroInner">
+          <div class="terminal">
+            <div>FLOW: QR PAY → WhatsApp → attach proof → process</div>
+            <div>ADMIN: order masuk log bila tekan <b>PAY NOW</b> / <b>SAYA DAH BAYAR</b></div>
+          </div>
+
+          <h2 class="heroTitle">Topup macam sistem betul (tanpa backend)</h2>
+          <p class="heroText">
+            Ini versi PRO++: ada <b>MLBB</b>, ada <b>Order Log</b> (search/filter/done/delete/export) — semua disimpan localStorage.
+          </p>
+
+          <div class="ctaRow">
+            <button class="btn btnPrimary" id="btnCopyOrder" type="button">COPY INVOICE</button>
+            <button class="btn btnGhost" id="btnExportLog" type="button">EXPORT ORDER LOG</button>
+            <button class="btn btnDanger" id="btnClearAll" type="button">CLEAR LOG</button>
+          </div>
+
+          <div class="hint">
+            QR images: letak di repo <b>assets/qr/</b> (ShopeePay_QR.png, MAE_QR.png, TNG_QR.png).
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sideTitle">
+          <h3>Quick Packs (MLBB + Topup)</h3>
+          <span class="tag2">FAST</span>
+        </div>
+        <div class="summary" style="margin-top:10px">
+          <div class="sumRow"><span>MLBB: 86 Diamonds</span><button class="act" id="qMlbb86">PICK</button></div>
+          <div class="sumRow"><span>MLBB: 172 Diamonds</span><button class="act" id="qMlbb172">PICK</button></div>
+          <div class="sumRow"><span>Prepaid RM10</span><button class="act" id="qPre10">PICK</button></div>
+          <div class="sumRow"><span>Prepaid RM30</span><button class="act" id="qPre30">PICK</button></div>
+        </div>
+        <div class="hint">Packs ini template. Tukar ikut harga supplier kau nanti.</div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT: Form -->
+      <div class="card">
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-mode="mlbb" type="button">🎮 MLBB</button>
+          <button class="tab" data-mode="prepaid" type="button">📱 PREPAID</button>
+          <button class="tab" data-mode="gift" type="button">🎁 GIFT</button>
+          <button class="tab" data-mode="pin" type="button">🔑 PIN</button>
+        </div>
+
+        <div class="form">
+          <div class="field">
+            <div class="label">PRODUK</div>
+            <select id="product">
+              <option value="mlbb">MLBB Diamonds</option>
+              <option value="prepaid">Topup Prepaid</option>
+              <option value="gift">Gift Card</option>
+              <option value="pin">Topup PIN / Voucher</option>
+            </select>
+          </div>
+
+          <div class="field" id="amountField">
+            <div class="label">AMOUNT (RM)</div>
+            <select id="amount">
+              <option value="10">RM10</option>
+              <option value="20">RM20</option>
+              <option value="30">RM30</option>
+              <option value="50">RM50</option>
+              <option value="100">RM100</option>
+            </select>
+          </div>
+
+          <div class="field" id="mlbbPackField">
+            <div class="label">MLBB PACK</div>
+            <select id="mlbbPack">
+              <option value="86 Diamonds">86 Diamonds</option>
+              <option value="172 Diamonds">172 Diamonds</option>
+              <option value="257 Diamonds">257 Diamonds</option>
+              <option value="344 Diamonds">344 Diamonds</option>
+              <option value="514 Diamonds">514 Diamonds</option>
+            </select>
+          </div>
+
+          <div class="field" id="carrierField">
+            <div class="label">TELCO / PLATFORM</div>
+            <select id="carrier">
+              <option value="U Mobile">U Mobile</option>
+              <option value="Digi">Digi</option>
+              <option value="Celcom">Celcom</option>
+              <option value="Maxis">Maxis</option>
+              <option value="Tune Talk">Tune Talk</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="field" id="targetField">
+            <div class="label">NO. TELEFON / ID (WAJIB)</div>
+            <input id="target" placeholder="Contoh: 01XXXXXXXX / ID MLBB" />
+          </div>
+
+          <div class="field" id="mlbbServerField">
+            <div class="label">MLBB SERVER ID</div>
+            <input id="mlbbServer" placeholder="Contoh: 1234 (server)" />
+          </div>
+
+          <div class="field full" id="giftFields" style="display:none">
+            <div class="label">NAMA PENERIMA (GIFT)</div>
+            <input id="recipient" placeholder="Contoh: Amir / Customer" />
+          </div>
+
+          <div class="field full" id="pinFields" style="display:none">
+            <div class="label">PIN TYPE</div>
+            <select id="pinType">
+              <option value="Standard PIN">Standard PIN</option>
+              <option value="E-PIN">E-PIN (Digital)</option>
+              <option value="Voucher">Voucher Code</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <div class="label">CATATAN / NOTE</div>
+            <textarea id="note" placeholder="Contoh: urgent, lepas bayar terus proses."></textarea>
+          </div>
+        </div>
+
+        <div class="hint">
+          <b>Rules:</b> No OTP/password. Minta bukti transaksi (screenshot) sahaja.
+        </div>
+      </div>
+
+      <!-- RIGHT: Payment + Summary -->
+      <div class="card">
+        <div class="sideTitle">
+          <h3>Payment (Pilih 1)</h3>
+          <span class="tag2" id="payLabel">ShopeePay</span>
+        </div>
+
+        <div class="paySwitch">
+          <button class="payOpt active" id="opt-shopee" type="button" onclick="setPay('shopee')">SHOPEEPAY</button>
+          <button class="payOpt" id="opt-mae" type="button" onclick="setPay('mae')">MAE</button>
+          <button class="payOpt" id="opt-tng" type="button" onclick="setPay('tng')">TNG</button>
+        </div>
+
+        <div class="qrBox">
+          <img id="payQR" src="./assets/qr/ShopeePay_QR.png" alt="QR Payment">
+        </div>
+
+        <div class="toggleRow">
+          <div class="toggle">
+            <span>FEE</span>
+            <div class="switch on" id="feeSwitch" role="switch" aria-checked="true" tabindex="0"><div class="knob"></div></div>
+          </div>
+          <div class="toggle">
+            <span>MARGIN (RM)</span>
+            <input id="margin" type="number" min="0" step="0.10" value="0" style="width:120px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px;color:#fff;outline:none">
+          </div>
+        </div>
+
+        <div class="hr"></div>
+
+        <div class="sideTitle">
+          <h3>Ringkasan</h3>
+          <span class="tag2" id="statusTag">DRAFT</span>
+        </div>
+
+        <div class="summary">
+          <div class="sumRow"><span>Order ID</span><b class="mono" id="sOrder">-</b></div>
+          <div class="sumRow"><span>Produk</span><b id="sProduct">-</b></div>
+          <div class="sumRow"><span>Item/Pack</span><b id="sItem">-</b></div>
+          <div class="sumRow"><span>Carrier</span><b id="sCarrier">-</b></div>
+          <div class="sumRow"><span>Target</span><b id="sTarget">-</b></div>
+          <div class="sumRow"><span>Total</span><b id="sTotal">RM0.00</b></div>
+          <div class="sumRow"><span>Status</span><b id="sStatus">NEW</b></div>
+        </div>
+
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:14px">
+          <button class="btn btnPrimary paybtn" id="btnPayNow" type="button">PAY NOW (WHATSAPP)</button>
+          <button class="btn btnGhost paybtn" id="btnPaid" type="button">SAYA DAH BAYAR</button>
+          <button class="btn btnGhost paybtn" id="btnCopyInvoice" type="button">COPY INVOICE</button>
+        </div>
+
+        <div class="tag2" style="margin-top:14px">INVOICE TEXT</div>
+        <div class="summary mono" id="invoiceBox" style="white-space:pre-wrap">-</div>
+      </div>
+    </div>
+
+    <!-- ADMIN LOG -->
+    <div class="card" style="margin-top:16px">
+      <div class="sideTitle">
+        <h3>Admin Order Log (Local)</h3>
+        <span class="tag2" id="logCount">0 ORDERS</span>
+      </div>
+
+      <div class="logTop">
+        <input id="logSearch" placeholder="Search: OrderID / target / product / payment..." style="flex:1;min-width:220px">
+        <div class="chip active" data-filter="ALL">ALL</div>
+        <div class="chip" data-filter="NEW">NEW</div>
+        <div class="chip" data-filter="PAID">PAID</div>
+        <div class="chip" data-filter="DONE">DONE</div>
+      </div>
+
+      <div class="logTop" style="margin-top:10px">
+        <button class="btn btnGhost" id="btnExportOrders" type="button">EXPORT JSON</button>
+        <button class="btn btnDanger" id="btnClearOrders" type="button">CLEAR ORDERS</button>
+      </div>
+
+      <div class="tableWrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ORDER</th>
+              <th>DETAIL</th>
+              <th>TOTAL</th>
+              <th>PAYMENT</th>
+              <th>STATUS</th>
+              <th>ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="logBody">
+            <tr><td colspan="6" style="color:rgba(255,255,255,.65)">Belum ada order.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="hint">
+        Log ini simpan dalam browser (localStorage). Untuk share antara device → gunakan Export JSON.
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">Copied ✅</div>
+
+<script>
+  // ===== WA number =====
+  const WA_NUMBER = "601115360207"; // tukar: 60123456789
+
+  // ===== Storage keys =====
+  const ORDERS_KEY = "mbxw_orders_v1";
+
+  // ===== Payment QR config =====
+  let PAY_METHOD = "shopee";
+  const payConfig = {
+    shopee: { label: "ShopeePay", img: "./assets/qr/ShopeePay_QR.png" },
+    mae:    { label: "MAE",       img: "./assets/qr/MAE_QR.png" },
+    tng:    { label: "TNG eWallet", img: "./assets/qr/TNG_QR.JPG" }
+  };
+
+  // ===== State =====
+  let ORDER_ID = makeOrderId();
+  let FEE_ON = true;
+  let LOG_FILTER = "ALL";
+
+  const modeLabels = {
+    mlbb: "MLBB Diamonds",
+    prepaid: "Topup Prepaid",
+    gift: "Gift Card",
+    pin: "Topup PIN / Voucher"
+  };
+
+  // ===== Helpers =====
+  const $ = (q)=>document.querySelector(q);
+  const $$ = (q)=>Array.from(document.querySelectorAll(q));
+  const toast = (msg)=>{
+    const t=$("#toast");
+    t.textContent=msg; t.style.display="block";
+    clearTimeout(window.__t);
+    window.__t=setTimeout(()=>t.style.display="none", 1400);
+  };
+
+  function pad2(n){ return String(n).padStart(2,"0"); }
+  function random4(){ return String(Math.floor(Math.random()*10000)).padStart(4,"0"); }
+  function makeOrderId(){
+    const d=new Date();
+    return `MBXW-${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}-${pad2(d.getHours())}${pad2(d.getMinutes())}${pad2(d.getSeconds())}-${random4()}`;
+  }
+
+  function syncFeeSwitch(){
+    const sw=$("#feeSwitch");
+    sw.classList.toggle("on", FEE_ON);
+    sw.setAttribute("aria-checked", FEE_ON ? "true":"false");
+  }
+
+  function calcFee(amount){
+    if (!FEE_ON) return 0;
+    const a=Number(amount)||0;
+    if (a<=0) return 0;
+    let fee=a*0.015+0.40;
+    fee=Math.min(2.00, fee);
+    return Math.round(fee*100)/100;
+  }
+  function getMargin(){
+    const m=Number($("#margin").value||0);
+    return Math.max(0, Math.round(m*100)/100);
+  }
+
+  function setPay(key){
+    PAY_METHOD=key;
+    const cfg=payConfig[key]||payConfig.shopee;
+    $("#payQR").src=cfg.img;
+    $("#payLabel").textContent=cfg.label;
+    ["shopee","mae","tng"].forEach(k=>{
+      const btn=document.getElementById("opt-"+k);
+      if (btn) btn.classList.toggle("active", k===key);
+    });
+    updateSummary();
+    toast("Payment: "+cfg.label);
+  }
+
+  // ===== Product mode =====
+  function applyMode(mode){
+    $$("#tabs .tab").forEach(t=>t.classList.toggle("active", t.dataset.mode===mode));
+    $("#product").value=mode;
+
+    // show/hide fields
+    const isMlbb = (mode==="mlbb");
+    $("#mlbbPackField").style.display = isMlbb ? "flex" : "none";
+    $("#mlbbServerField").style.display = isMlbb ? "flex" : "none";
+    $("#amountField").style.display = isMlbb ? "none" : "flex";
+    $("#carrierField").style.display = (mode==="prepaid") ? "flex" : "none";
+
+    $("#giftFields").style.display = (mode==="gift") ? "flex" : "none";
+    $("#pinFields").style.display = (mode==="pin") ? "flex" : "none";
+
+    // target label text
+    $("#targetField .label").textContent = isMlbb ? "MLBB PLAYER ID (WAJIB)" : "NO. TELEFON / ID (WAJIB)";
+
+    updateSummary();
+  }
+
+  // ===== Invoice =====
+  function buildInvoice(extraLine=""){
+    const mode=$("#product").value;
+    const carrier=$("#carrier").value;
+    const target=$("#target").value.trim();
+    const recipient=$("#recipient").value.trim();
+    const pinType=$("#pinType").value;
+    const note=$("#note").value.trim();
+    const payLabel=(payConfig[PAY_METHOD]?.label||"Manual");
+    const margin=getMargin();
+
+    let amount=0;
+    let item="-";
+
+    if (mode==="mlbb"){
+      item=$("#mlbbPack").value;
+      // amount for MLBB: you can map later; for now let user set via margin as profit and set base price by pack in note.
+      // We'll ask user to set RM price using margin field as final adjust? Better: use amount dropdown hidden, so we set a default base.
+      // Here: base price uses a simple map; edit later easily.
+      const map = {
+        "86 Diamonds": 5,
+        "172 Diamonds": 10,
+        "257 Diamonds": 15,
+        "344 Diamonds": 20,
+        "514 Diamonds": 30
+      };
+      amount = map[item] ?? 10;
+    } else {
+      amount = Number($("#amount").value||0);
+      item = (mode==="pin") ? pinType : (mode==="gift" ? "Gift" : "Prepaid");
+    }
+
+    const fee=calcFee(amount);
+    const total=(amount+fee+margin).toFixed(2);
+
+    const missing=[];
+    if (!target || target.length<6) missing.push("target ID/no");
+    if (mode==="gift" && !recipient) missing.push("nama penerima");
+    if (mode==="mlbb" && !$("#mlbbServer").value.trim()) missing.push("server ID");
+
+    if (missing.length){
+      return {ok:false, text:`❌ Lengkapkan dulu: ${missing.join(", ")}.` , total};
+    }
+
+    const lines=[];
+    lines.push("🧾 *INVOICE TOPUP HUB (PRO++)*");
+    lines.push(`Order ID: *${ORDER_ID}*`);
+    lines.push(`Produk: *${modeLabels[mode] || mode}*`);
+    lines.push(`Item/Pack: *${item}*`);
+    if (mode==="prepaid") lines.push(`Carrier: *${carrier}*`);
+    lines.push(`Target: *${target}*`);
+    if (mode==="mlbb") lines.push(`Server: *${$("#mlbbServer").value.trim()}*`);
+    if (mode==="gift") lines.push(`Penerima: *${recipient}*`);
+    lines.push(`Payment: *${payLabel}*`);
+    lines.push(`Sub-total: *RM${amount}*`);
+    lines.push(`Fee: *RM${fee.toFixed(2)}* (${FEE_ON ? "ON":"OFF"})`);
+    lines.push(`Margin: *RM${margin.toFixed(2)}*`);
+    lines.push(`TOTAL: *RM${total}*`);
+    if (note){
+      lines.push("");
+      lines.push("Catatan:");
+      lines.push(note);
+    }
+    if (extraLine){
+      lines.push("");
+      lines.push(extraLine);
+    }
+    lines.push("");
+    lines.push("✅ Lepas bayar, hantar *bukti transaksi (screenshot)* untuk proses.");
+    lines.push("🔒 Nota: Jangan kongsi OTP/password.");
+
+    return {ok:true, text:lines.join("\\n"), total};
+  }
+
+  async function copyText(text){
+    try{
+      await navigator.clipboard.writeText(text);
+      toast("Copied ✅");
+    }catch(e){
+      const ta=document.createElement("textarea");
+      ta.value=text; document.body.appendChild(ta);
+      ta.select(); document.execCommand("copy"); ta.remove();
+      toast("Copied ✅");
+    }
+  }
+
+  function openWA(text){
+    const msg=encodeURIComponent(text);
+    const url=(WA_NUMBER && WA_NUMBER.includes("X")) ? ("https://wa.me/?text="+msg) : ("https://wa.me/"+WA_NUMBER+"?text="+msg);
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+  // ===== Orders storage =====
+  function loadOrders(){
+    try{
+      const raw=localStorage.getItem(ORDERS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch{ return []; }
+  }
+  function saveOrders(list){
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(list, null, 2));
+  }
+
+  function addOrder(status){
+    const inv=buildInvoice(status==="PAID" ? "📌 *Saya dah bayar.* Saya akan attach bukti transaksi lepas ni." : "");
+    if (!inv.ok){ toast("Lengkapkan form dulu"); return null; }
+
+    const mode=$("#product").value;
+    const carrier=$("#carrier").value;
+    const target=$("#target").value.trim();
+    const payLabel=(payConfig[PAY_METHOD]?.label||"Manual");
+
+    const order={
+      id: ORDER_ID,
+      ts: Date.now(),
+      product: modeLabels[mode] || mode,
+      item: (mode==="mlbb") ? $("#mlbbPack").value : (mode==="pin" ? $("#pinType").value : (mode==="gift" ? "Gift" : carrier)),
+      target,
+      payment: payLabel,
+      total: inv.total,
+      status: status, // NEW / PAID / DONE
+      note: $("#note").value.trim()
+    };
+
+    const orders=loadOrders();
+    orders.unshift(order);
+    saveOrders(orders);
+    renderLog();
+    return inv;
+  }
+
+  function setOrderStatus(id, status){
+    const orders=loadOrders();
+    const o=orders.find(x=>x.id===id);
+    if (o){ o.status=status; saveOrders(orders); renderLog(); toast("Updated ✅"); }
+  }
+  function deleteOrder(id){
+    const orders=loadOrders().filter(x=>x.id!==id);
+    saveOrders(orders);
+    renderLog();
+    toast("Deleted ✅");
+  }
+
+  function exportOrders(){
+    const data=JSON.stringify(loadOrders(), null, 2);
+    const blob=new Blob([data], {type:"application/json"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+    a.href=url; a.download="mbxw_order_log.json";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast("Exported ✅");
+  }
+
+  function clearOrders(){
+    if (!confirm("Clear semua orders?")) return;
+    saveOrders([]);
+    renderLog();
+    toast("Cleared ✅");
+  }
+
+  function renderLog(){
+    const tbody=$("#logBody");
+    const q=$("#logSearch").value.trim().toLowerCase();
+    const orders=loadOrders();
+    const filtered=orders.filter(o=>{
+      const matchQ = !q || (o.id+o.product+o.item+o.target+o.payment).toLowerCase().includes(q);
+      const matchF = (LOG_FILTER==="ALL") ? true : (o.status===LOG_FILTER);
+      return matchQ && matchF;
+    });
+
+    $("#logCount").textContent = `${filtered.length} ORDERS`;
+
+    if (!filtered.length){
+      tbody.innerHTML = `<tr><td colspan="6" style="color:rgba(255,255,255,.65)">Tiada order.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(o=>{
+      const stClass = o.status==="NEW" ? "st-new" : (o.status==="PAID" ? "st-paid" : "st-done");
+      return `
+        <tr>
+          <td>
+            <div class="mono"><b>${o.id}</b></div>
+            <div class="small">${new Date(o.ts).toLocaleString()}</div>
+          </td>
+          <td>
+            <div><b>${o.product}</b></div>
+            <div class="small">Item: ${o.item}</div>
+            <div class="small">Target: <span class="mono">${o.target}</span></div>
+          </td>
+          <td><b>RM${o.total}</b></td>
+          <td><div class="small">${o.payment}</div></td>
+          <td><span class="status ${stClass}">${o.status}</span></td>
+          <td>
+            <div class="actions">
+              <button class="act" data-act="paid" data-id="${o.id}">PAID</button>
+              <button class="act" data-act="done" data-id="${o.id}">DONE</button>
+              <button class="act danger" data-act="del" data-id="${o.id}">DEL</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+
+    // wire actions
+    $$("button.act[data-act]").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        const id=b.dataset.id;
+        const act=b.dataset.act;
+        if (act==="paid") setOrderStatus(id, "PAID");
+        if (act==="done") setOrderStatus(id, "DONE");
+        if (act==="del") deleteOrder(id);
+      });
+    });
+  }
+
+  // ===== Summary panel update =====
+  function updateSummary(){
+    const inv=buildInvoice();
+    $("#sOrder").textContent = ORDER_ID;
+    $("#sProduct").textContent = modeLabels[$("#product").value] || "-";
+    $("#sCarrier").textContent = ($("#product").value==="prepaid") ? $("#carrier").value : "-";
+    $("#sTarget").textContent = $("#target").value.trim() || "-";
+    $("#sItem").textContent = ($("#product").value==="mlbb") ? $("#mlbbPack").value : ($("#product").value==="pin" ? $("#pinType").value : ($("#product").value==="gift" ? "Gift" : $("#amount").value));
+    $("#sPay").textContent = (payConfig[PAY_METHOD]?.label||"-");
+    $("#sTotal").textContent = inv.ok ? ("RM"+inv.total) : "RM0.00";
+    $("#sStatus").textContent = inv.ok ? "READY" : "DRAFT";
+    $("#invoiceBox").textContent = inv.text;
+
+    $("#statusTag").textContent = inv.ok ? "READY" : "DRAFT";
+    $("#statusTag").style.borderColor = inv.ok ? "rgba(52,211,153,.45)" : "rgba(255,255,255,.12)";
+    $("#statusTag").style.background = inv.ok ? "rgba(52,211,153,.12)" : "rgba(255,255,255,.04)";
+    $("#statusTag").style.color = inv.ok ? "#bbf7d0" : "rgba(255,255,255,.80)";
+  }
+
+  // ===== Quick picks =====
+  function quickMlbb(pack){
+    ORDER_ID = makeOrderId();
+    $("#product").value="mlbb";
+    $("#mlbbPack").value=pack;
+    applyMode("mlbb");
+    updateSummary();
+    toast("MLBB picked ✅");
+  }
+  function quickPre(amount){
+    ORDER_ID = makeOrderId();
+    $("#product").value="prepaid";
+    $("#amount").value=String(amount);
+    applyMode("prepaid");
+    updateSummary();
+    toast("Prepaid picked ✅");
+  }
+
+  function clearForm(){
+    ORDER_ID = makeOrderId();
+    $("#product").value="mlbb";
+    $("#amount").value="10";
+    $("#carrier").value="U Mobile";
+    $("#target").value="";
+    $("#mlbbServer").value="";
+    $("#recipient").value="";
+    $("#pinType").value="Standard PIN";
+    $("#note").value="";
+    $("#margin").value="0";
+    applyMode("mlbb");
+    updateSummary();
+    toast("Cleared ✅");
+  }
+
+  // ===== Init =====
+  window.addEventListener("load", ()=>{
+    // defaults
+    setPay("shopee");
+    applyMode("mlbb");
+    syncFeeSwitch();
+    renderLog();
+
+    // tabs
+    $$("#tabs .tab").forEach(t=> t.addEventListener("click", ()=> applyMode(t.dataset.mode)));
+
+    // fee toggle
+    $("#feeSwitch").addEventListener("click", ()=>{
+      FEE_ON=!FEE_ON; syncFeeSwitch(); updateSummary(); toast("Fee "+(FEE_ON?"ON":"OFF"));
+    });
+    $("#feeSwitch").addEventListener("keydown", (e)=>{
+      if (e.key==="Enter" || e.key===" "){ e.preventDefault(); FEE_ON=!FEE_ON; syncFeeSwitch(); updateSummary(); }
+    });
+
+    // fields update
+    ["product","amount","carrier","target","mlbbServer","recipient","pinType","note","mlbbPack","margin"].forEach(id=>{
+      const el=document.getElementById(id);
+      el.addEventListener("input", updateSummary);
+      el.addEventListener("change", updateSummary);
+    });
+    $("#product").addEventListener("change", ()=> applyMode($("#product").value));
+
+    // actions
+    $("#btnCopyOrder").addEventListener("click", async ()=> copyText(buildInvoice().text));
+    $("#btnCopyInvoice").addEventListener("click", async ()=> copyText(buildInvoice().text));
+
+    $("#btnPayNow").addEventListener("click", ()=>{
+      const inv = addOrder("NEW");
+      if (!inv) return;
+      openWA(inv.text);
+    });
+
+    $("#btnPaid").addEventListener("click", ()=>{
+      const inv = addOrder("PAID");
+      if (!inv) return;
+      openWA(inv.text);
+    });
+
+    $("#btnClear").addEventListener("click", clearForm);
+
+    // log controls
+    $("#logSearch").addEventListener("input", renderLog);
+    $$(".chip[data-filter]").forEach(c=>{
+      c.addEventListener("click", ()=>{
+        LOG_FILTER=c.dataset.filter;
+        $$(".chip[data-filter]").forEach(x=>x.classList.toggle("active", x.dataset.filter===LOG_FILTER));
+        renderLog();
+      });
+    });
+    $("#btnExportOrders").addEventListener("click", exportOrders);
+    $("#btnClearOrders").addEventListener("click", clearOrders);
+
+    // header buttons
+    $("#btnExportLog").addEventListener("click", exportOrders);
+    $("#btnClearAll").addEventListener("click", clearOrders);
+
+    // quick picks
+    $("#qMlbb86").addEventListener("click", ()=> quickMlbb("86 Diamonds"));
+    $("#qMlbb172").addEventListener("click", ()=> quickMlbb("172 Diamonds"));
+    $("#qPre10").addEventListener("click", ()=> quickPre(10));
+    $("#qPre30").addEventListener("click", ()=> quickPre(30));
+
+    updateSummary();
+  });
+</script>
+</body>
+</html>
